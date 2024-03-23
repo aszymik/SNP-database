@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SNP atlas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../static/bootstrap.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark navbar-expand-lg bg-primary p-1">
+    <div class="container-lg">
+        <a class="navbar-brand" href="{% url 'home' %}">SNP Atlas</a>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'snps' %}">SNPs</a>
+              </li>
+            </ul>
+    </div>
+</nav>
+
+<!-- Treść strony -->
+{% block content %}
+<div class="container overflow-hidden">
+  <div class="row justify-content-md-center">
+    <div class="col-md-10 gy-3">
+      <div class="card md-10">
+        <div class="card-header bg-primary text-white">Welcome to SNP Atlas</div>
+        <div class="card-body">
+          <p class="card-text">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit nisi sed sollicitudin pellentesque. Nunc posuere purus rhoncus pulvinar aliquam. Ut aliquet tristique nisl vitae volutpat. Nulla aliquet porttitor venenatis. Donec a dui et dui fringilla consectetur id nec massa. Aliquam erat volutpat. Sed ut dui ut lacus dictum fermentum vel tincidunt neque. Sed sed lacinia lectus. Duis sit amet sodales felis. Duis nunc eros, mattis at dui ac, convallis semper risus. In adipiscing ultrices tellus, in suscipit massa vehicula eu.
+          </p>
+          <p class="card-text">
+            Sed ut tempus tortor. Integer ornare condimentum blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Phasellus ac felis pharetra, efficitur orci nec, aliquet leo. Nulla ac est at dolor posuere sagittis sodales id sapien. Sed porta euismod velit, at porttitor augue molestie id. Nullam bibendum gravida rhoncus. Quisque ornare urna sapien, eu volutpat diam tempor et. Integer ultrices nibh orci, ut dignissim erat ultricies quis. Curabitur quis risus dui. Quisque at finibus sem. Curabitur ut nulla quis dolor tempor vestibulum. Phasellus ultricies nibh ac odio rutrum malesuada. Ut tincidunt finibus molestie. Phasellus vitae nulla eu tortor dignissim viverra et sit amet lacus.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-md-center my-3">
+    <div class="col-md-5">
+      <div class="card md-5">
+        <div class="card-header bg-primary text-white">Basic statistics</div>
+        <div class="card-body">
+          <table class="table">
+            <thead class="text-center">
+              <tr>
+                <th scope="col">Category</th>
+                <th scope="col">Position</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Species</td>
+                <td>{{ species_count }}</td>
+              </tr>
+              <tr>
+                <td>Samples</td>
+                <td>{{ sample_count }}</td>
+              </tr>
+              <tr>
+                <td>SNPs</td>
+                <td>{{ snp_count }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="card md-5">
+        <div class="card-header bg-primary text-white">Charts</div>
+        <div class="card-body">
+          <p class="card-text"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}
+
+</body>
+</html>

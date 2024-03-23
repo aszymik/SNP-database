@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+{% extends 'snp_app/home.html' %}
+{% block content %}
+{% load static %}
+
+<script>
+  var chosen_species = "";
+  // Zapisywanie wybranego gatunku
+  function save_species(species){
+    chosen_species = species;
+    console.log(chosen_species)
+    document.getElementById("chosen-species").textContent = chosen_species;
+    document.getElementById("species-input").value = chosen_species;
+  }
+</script>
+
+<!-- Biblioteka jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  var chosen_snp = "";
+  // Zapisywanie SNP i przetwarzanie go w formularzu
+  function save_snp(snp) {
+    chosen_snp = snp;
+    console.log(chosen_snp);
+    document.getElementById("snp-input").value = chosen_snp;
+    document.getElementById("hidden-snp").value = chosen_snp;
+
+    // Wywołanie żądania AJAX
+    $.ajax({
+        url: "{% url 'save_snp' %}",
+        type: "POST",
+        data: {
+          chosen_snp: chosen_snp,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        dataType: "json",
+        success: function(data) {
+          // Obsługa danych zwrotnych
+          var tableBody = $('#annotations-table tbody');
+          tableBody.empty();
+          data.forEach(function(annotation) {
+                var row = '<tr class="ann-row">' +
+                    '<td>' + annotation.type + '</td>' +
+                    '<td>' + annotation.text + '</td>' +
+                    '</tr>';
+                tableBody.append(row);
+            });
+
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+        }
+    });
+  }
+</script>
+
+<!--Treść strony-->
+<div class="container overflow-hidden">
+    <div class="row justify-content-md-center">
+      <div class="col-md-10 my-3">
+        <div class="card md-10">
+          <div class="card-header bg-primary text-white">Select species</div>
+          <div class="card-body">
+            <div class="row row-cols-6 g-2">
+              <!--Wyświetlanie obrazków gatunków-->
+              {% for x in species %}
+                <figure class="figure">
+                  <img src="{{ x.image.url }}" class="figure-img img-fluid rounded" alt="{{ x.name }}" onclick="save_species('{{ x.name }}')">
+                  <figcaption class="figure-caption text-center">{{ x.name }}</figcaption>
+                </figure>
+              {% endfor %}
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-10">
+          <div class="card md-10">
+            <div class="card-header bg-primary text-white">SNP search</div>
+            <div class="card-body">
+              <div class="my-1 fw-bold" id="chosen-species"></div>
+              
+              <!--Formularz-->
+              <form action="{% url 'snps' %}" method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                  <input type="hidden" id="species-input" name="chosen_species" value="">
+                </div>
+                <div class="col-md-6 my-2">
+                    <div class="input-group">
+                      <div class="col-md-2 col-form-label">
+                      {{ form.region.label_tag }}
+                    </div>
+                      {{ form.region }}
+                    </div>
+                </div>
+                <div class="col-md-6 gy-3">
+                    <div class="input-group">
+                      <div class="col-md-2 col-form-label">
+                        MAF
+                      </div>
+                      <div class="input-group-text">
+                        {{ form.maf_min.label_tag }}
+                      </div>
+                        {{ form.maf_min }} 
+                        <div class="input-group-text">
+                          {{ form.maf_max.label_tag }}
+                        </div>
+                        {{ form.maf_max }}
+                    </div>
+                </div>
+                <div class="row-cols-auto">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!--Tabela-->  
+    <div class="row justify-content-md-center">
+      <div class="col-md-10 my-3">
+      <table class="table table-striped table-bordered my-2 text-center align-middle">
+        <thead class="text-center">
+          <tr>
+            <th scope="col">Chromosome</th>
+            <th scope="col">Position</th>
+            <th scope="col">REF allele</th>
+            <th scope="col">ALT allele</th>
+            <th scope="col">MAF</th>
+            <th scope="col">Annotation</th>
+            <th scope="col">Browser</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for snp in snps %}
+          <tr class="snp-row">
+            <td>{{ snp.chromosome }}</td>
+            <td>{{ snp.coordinate }}</td>
+            <td>{{ snp.reference_allele }}</td>
+            <td>{{ snp.alternative_allele }}</td>
+            <td>{{ snp.MAF }}</td>
+            <td class="text-center">
+
+              <!--Przekazywanie id wybranego SNP-->
+              <form method="POST" id="save-snp">
+                {% csrf_token %}
+                <input type="hidden" id="hidden-snp" name="chosen_snp" value="">
+              </form>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#annotationsModal" onclick="save_snp('{{ snp.id }}')">Details</button>
+            </td>
+            <td class="text-center">
+              <button type="button" class="btn btn-primary">Show in browser</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+        
+        <!--Modal-->
+        <div class="modal .modal-lg fade" id="annotationsModal" tabindex="-1" aria-labelledby="annotationsModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="annotationsModalLabel">Annotations</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <table class="table table-striped table-bordered my-2 text-center align-middle" id="annotations-table">
+                  <thead class="text-center">
+                    <tr>
+                      <th scope="col">Type</th>
+                      <th scope="col">Content</th>
+                    </tr>
+                  </thead>
+          
+                  <tbody>
+                    {% for ann in annotations %}
+                    <tr class="ann-row">
+                      <td>{{ ann.type }}</td>
+                      <td>{{ ann.text }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+
+                <hr>
+                <!--Dodawanie adnotacji-->
+                <h5>Add annotation</h5>
+                <form action="{% url 'annotations' %}" method="POST" id="annotationsForm">
+                  {% csrf_token %}
+                  <div class="input-group">
+                    <input type="hidden" id="snp-input" name="chosen_snp" value="">
+                  </div>
+                  <div class="mb-3">
+                    {{ annot_form.type.label_tag }}
+                    {{ annot_form.type }}
+                  </div>
+                  <div class="mb-3">
+                    {{ annot_form.text.label_tag }}
+                    {{ annot_form.text }}
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" data-bs-target="#annotationsModal" data-bs-toggle="modal" data-bs-dismiss="modal">Add</button>
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+</div>
+
+{% endblock %}
+

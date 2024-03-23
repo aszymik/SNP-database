@@ -1,0 +1,31 @@
+{% extends 'basic.html' %}
+
+<script>
+    function deleteAnimal(event){
+        animal = Animal.objects.get(name=event);
+        alert(animal);
+        animal.delete();
+
+    }
+</script>
+
+<h1>Zwierzaki</h1>
+
+<table>
+    <tr>
+        <th>Imię</th>
+        <th>Gatunek</th>
+        <th>Właściciel</th>
+        <th>Usuń</th>
+    </tr>
+    {% for x in myanimals %}
+    <tr>
+        <td>{{ x.name }}</td>
+        <td>{{ x.species }}</td>
+        <td>{{ x.owner }}</td>
+        <!--<td><button onclick="alert('{{x.name}}')">Usuń</button></td>-->
+        <td><button onclick=deleteAnimal()>Usuń</button></td>
+
+    </tr>
+    {% endfor %}
+</table>
