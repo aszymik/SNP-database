@@ -14,5 +14,4 @@ A django application that allows you to search single nucleotide polymorphisms f
 * Django version 4.2
 
 ### Run app
-Go to project source directory and type
-`python3 manage.py runserver`
+Go to project source directory and type `python3 manage.py runserver`.
