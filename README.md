@@ -1,11 +1,11 @@
 # SNP database
 A django application that allows you to search single nucleotide polymorphisms for different species and annotate variants. All data is synthetic.
 
+<i>App main page</i>
 <center><img src="screenshots/app_main.png" alt="Main page screenshot"></center>
-<center>App main page</center>
 
+<i>Browsing and adding annotations</i>
 <center><img src="screenshots/annotations.png" alt="Annotations screenshot"></center>
-<center>Browsing and adding annotations</center>
 
 ## Setup
 
